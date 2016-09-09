@@ -1,16 +1,255 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:paddingBottom="@dimen/activity_vertical_margin"
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
+    android:paddingTop="@dimen/activity_vertical_margin">
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:weightSum="13"
     tools:context="com.example.xd720p.sensorcontroller_09082016.MainActivity">
 
-    <TextView
-        android:layout_width="wrap_content"
+    <RelativeLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Hello World!" />
-</RelativeLayout>
+        android:orientation="horizontal"
+       >
+
+        <TextView
+            android:id="@+id/temperature_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:text="Температура"
+            android:textColor="#3EB7E5"
+            android:textSize="16sp"
+            />
+       <Switch
+           android:id="@+id/temperature_switch"
+           android:layout_width="wrap_content"
+           android:layout_height="wrap_content"
+           android:layout_alignParentRight="true"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:background="#3EB7E5"
+            android:layout_alignParentBottom="true"
+            android:layout_marginTop="30dp"/>
+
+    </RelativeLayout>
+
+
+    <LinearLayout
+        android:id="@+id/temp_sim_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:weightSum="3"
+        >
+
+        <TextView
+            android:id="@+id/temp_sim_view"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:textSize="14sp"
+            android:layout_gravity="left|bottom"
+            android:text="СИМ-карта Контроллера"
+            />
+        <EditText
+            android:id="@+id/temp_sim_edit"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_gravity="left|bottom"
+            android:singleLine="true"
+            android:inputType="phone"
+            />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/temp_password_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:weightSum="3"
+        >
+
+        <TextView
+            android:id="@+id/temp_password_view"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:textSize="14sp"
+            android:layout_gravity="left|bottom"
+            android:text="Пароль"
+            />
+        <EditText
+            android:id="@+id/temp_password_edit"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_gravity="left|bottom"
+            android:inputType="number"
+            android:singleLine="true"
+            />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/temp_object_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:weightSum="3"
+        >
+
+        <TextView
+            android:id="@+id/temp_object_view"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:textSize="14sp"
+            android:layout_gravity="left|bottom"
+            android:text="Наименование объекта"
+            />
+        <EditText
+            android:id="@+id/temp_object_edit"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_gravity="left|bottom"
+            android:singleLine="true"
+            />
+    </LinearLayout>
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingTop="50dp"
+        >
+
+        <TextView
+            android:id="@+id/electricty_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:text="Электричество"
+            android:textColor="#3EB7E5"
+            android:textSize="16sp"
+            />
+        <Switch
+            android:id="@+id/electricty_switch"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:background="#3EB7E5"
+            android:layout_alignParentBottom="true"
+            android:layout_marginTop="30dp"/>
+
+    </RelativeLayout>
+
+
+    <LinearLayout
+        android:id="@+id/elec_sim_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:weightSum="3"
+        >
+
+        <TextView
+            android:id="@+id/elec_sim_view"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:textSize="14sp"
+            android:layout_gravity="left|bottom"
+            android:text="СИМ-карта Счётчика"
+            />
+        <EditText
+            android:id="@+id/elec_sim_edit"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_gravity="left|bottom"
+            android:inputType="phone"
+            android:singleLine="true"
+            />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/elec_password_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:weightSum="3"
+        >
+
+        <TextView
+            android:id="@+id/elec_password_view"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:textSize="14sp"
+            android:layout_gravity="left|bottom"
+            android:text="Пароль"
+            />
+        <EditText
+            android:id="@+id/elec_password_edit"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_gravity="left|bottom"
+            android:singleLine="true"
+            android:inputType="number"
+            />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:layout_weight="1"
+        android:orientation="horizontal"
+        android:paddingTop="50dp"
+        >
+
+        <Button
+            android:id="@+id/cancel_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Сохранить"
+            android:background="@drawable/button_press"
+            android:layout_marginRight="5dp"
+            android:padding="10dp"
+            android:textColor="#FFFFFF"
+            />
+
+        <Button
+            android:id="@+id/ok_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/button_press"
+            android:textColor="#FFFFFF"
+            android:text="Отмена"
+            android:layout_marginLeft="5dp"
+            android:padding="10dp"/>
+
+    </LinearLayout>
+
+
+</LinearLayout>
+</ScrollView>
