@@ -38,11 +38,12 @@
                     android:weightSum="20">
 
                     <Spinner
+                        android:id="@+id/object_spinner"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="10"
                         android:textColor="#000000"
-                        style="@android:style/Widget.Holo.Spinner"/>
+                        style="@android:style/Widget.Holo.Light.Spinner"/>
 
                     <ImageButton
                         android:layout_width="wrap_content"
@@ -272,6 +273,7 @@
             </LinearLayout>
 
             <LinearLayout
+
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
@@ -281,6 +283,22 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Температура"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/temp_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="15dp">
+
+                <ListView
+                    android:id="@+id/temp_list"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                </ListView>
 
             </LinearLayout>
 

@@ -77,7 +77,7 @@
     </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/temp_sim_layout"
+        android:id="@+id/elec_period_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
@@ -85,7 +85,7 @@
         >
 
         <TextView
-            android:id="@+id/temp_sim_view"
+            android:id="@+id/elec_period_view"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -94,7 +94,7 @@
             android:text="Период опроса счётчика"
             />
         <EditText
-            android:id="@+id/temp_sim_edit"
+            android:id="@+id/elec_period_edit"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -122,7 +122,7 @@
         >
 
         <Button
-            android:id="@+id/cancel_button"
+            android:id="@+id/ok_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Сохранить"
@@ -133,7 +133,7 @@
             />
 
         <Button
-            android:id="@+id/ok_button"
+            android:id="@+id/cancel_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@drawable/button_press"
