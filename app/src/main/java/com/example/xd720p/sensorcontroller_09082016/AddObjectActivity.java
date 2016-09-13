@@ -34,8 +34,6 @@ public class AddObjectActivity extends AppCompatActivity {
             public void onClick(View v) {
                 ObservationPoints observationPoints = new ObservationPoints();
 
-                ObservationPoints.deleteAll();
-
                 System.out.println("lalaslda");
                 finish();
             }

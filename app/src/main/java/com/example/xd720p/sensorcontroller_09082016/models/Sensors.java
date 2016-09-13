@@ -4,6 +4,13 @@ package com.example.xd720p.sensorcontroller_09082016.models;
 import com.activeandroid.Model;
 import com.activeandroid.annotation.Column;
 import com.activeandroid.annotation.Table;
+import com.activeandroid.query.Delete;
+import com.activeandroid.query.Select;
+import com.activeandroid.query.Update;
+
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * Created by xd720p on 12.09.16.
@@ -13,7 +20,7 @@ import com.activeandroid.annotation.Table;
 public class Sensors extends Model {
 
     @Column(name = "OBSERVATION_POINT")
-    private Integer OBSERVATION_POINT;
+    private String OBSERVATION_POINT;
 
     @Column(name = "POSITION")
     private Integer POSITION;
@@ -40,7 +47,7 @@ public class Sensors extends Model {
         super();
     }
 
-    public Sensors(Integer OBSERVATION_POINT, Integer POSITION, Integer ACTIVE, String NAME, String CODE_NAME, String SMS_NAME, String CREATED_AT, String MODIFIED_AT) {
+    public Sensors(String OBSERVATION_POINT, Integer POSITION, Integer ACTIVE, String NAME, String CODE_NAME, String SMS_NAME, String CREATED_AT, String MODIFIED_AT) {
         super();
         this.OBSERVATION_POINT = OBSERVATION_POINT;
         this.POSITION = POSITION;
@@ -52,11 +59,11 @@ public class Sensors extends Model {
         this.MODIFIED_AT = MODIFIED_AT;
     }
 
-    public Integer getOBSERVATION_POINT() {
+    public String getOBSERVATION_POINT() {
         return OBSERVATION_POINT;
     }
 
-    public void setOBSERVATION_POINT(Integer OBSERVATION_POINT) {
+    public void setOBSERVATION_POINT(String OBSERVATION_POINT) {
         this.OBSERVATION_POINT = OBSERVATION_POINT;
     }
 
@@ -114,5 +121,52 @@ public class Sensors extends Model {
 
     public void setMODIFIED_AT(String MODIFIED_AT) {
         this.MODIFIED_AT = MODIFIED_AT;
+    }
+
+    public static List<Sensors> getItems() {
+        return new Select()
+                .from(Sensors.class)
+                .execute();
+    }
+
+    public static List<String> getObjectSMSNames(String companyName) {
+
+        List<Sensors> temp = new Select(new String[]{"Id, SMS_NAME"})
+                .from(Sensors.class)
+                .where("OBSERVATION_POINT =?", companyName)
+                .orderBy("Name ASC")
+                .execute();
+        List<String> res = new ArrayList<String>();
+
+        for (Sensors item : temp) {
+            res.add(item.getSMS_NAME());
+        }
+
+        return res;
+    }
+
+    public static void updateObject(Sensors newObj, String smsName, String company) {
+        new Update(Sensors.class)
+                .set("POSITION = ?, NAME = ?, CODE_NAME = ?, SMS_NAME = ?, MODIFIED_AT = ?",
+                        newObj.getPOSITION(),
+                        newObj.getNAME(),
+                        newObj.getCODE_NAME(),
+                        newObj.getSMS_NAME(),
+                        newObj.getMODIFIED_AT()).where("SMS_NAME = ? AND OBSERVATION_POINT = ?", smsName, company).execute();
+    }
+
+    public static Sensors findEditable(String smsName, String company) {
+        return new Select()
+                .from(Sensors.class)
+                .where("SMS_NAME = ? AND OBSERVATION_POINT = ?", smsName, company)
+                .executeSingle();
+    }
+
+    public static void delete(String smsName, String company) {
+        new Delete().from(Sensors.class).where("SMS_NAME = ? AND OBSERVATION_POINT = ?", smsName, company).execute();
+    }
+
+    public static void deleteAll() {
+        new Delete().from(Sensors.class).execute();
     }
 }
