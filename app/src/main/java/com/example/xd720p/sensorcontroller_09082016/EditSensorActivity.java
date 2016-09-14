@@ -58,7 +58,7 @@ public class EditSensorActivity extends AppCompatActivity {
                 String currentDate = df.format(c.getTime());
 
                 Sensors sensor = new Sensors("",
-                        Integer.parseInt(sensorNumb.getText().toString()), 0,
+                        parseString(sensorNumb.getText().toString()), 0,
                         editRoom.getText().toString(),
                         sensorIndex.getText().toString(),
                         smsName.getText().toString(),
@@ -85,6 +85,8 @@ public class EditSensorActivity extends AppCompatActivity {
         });
     }
 
-
+    private Integer parseString(String input) {
+        return input.length() != 0 ? Integer.parseInt(input) : 0;
+    }
 
 }

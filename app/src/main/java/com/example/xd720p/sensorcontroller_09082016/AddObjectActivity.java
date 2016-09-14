@@ -62,16 +62,20 @@ public class AddObjectActivity extends AppCompatActivity {
                         tempObjectEdit.getText().toString(),
                         0, 1,
                         tempSimEdit.getText().toString(),
-                        Integer.parseInt(tempPasswordEdit.getText().toString()),
+                        parseString(tempPasswordEdit.getText().toString()),
                         temp,
                         elecSimEdit.getText().toString(),
-                        Integer.parseInt(elecPasswordEdit.getText().toString()),
+                        parseString(elecPasswordEdit.getText().toString()),
                         elec,
-                        String.valueOf(0),currentDate, currentDate);
+                        "",currentDate, currentDate);
                 observationPoints.save();
                 finish();
             }
         });
 
+    }
+
+    private Integer parseString(String input) {
+        return input.length() != 0 ? Integer.parseInt(input) : 0;
     }
 }
