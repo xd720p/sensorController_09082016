@@ -21,6 +21,13 @@ public class smsService extends IntentService {
         super(name);
     }
 
+    @Override
+    public void onCreate() {
+        super.onCreate();
+    }
+
+
+
 
     @Override
     protected void onHandleIntent(Intent intent) {

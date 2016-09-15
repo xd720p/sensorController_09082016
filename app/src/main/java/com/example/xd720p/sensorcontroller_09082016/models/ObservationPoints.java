@@ -216,6 +216,13 @@ public class ObservationPoints extends Model {
         new Delete().from(ObservationPoints.class).where("NAME = ?", name).execute();
     }
 
+    public static List<ObservationPoints> getAllActiveTPoints(){
+        return new Select().
+                from(ObservationPoints.class)
+                .where("ACTIVE_T = ?", 1)
+                .execute();
+    }
+
     public static void deleteAll() {
 
     }

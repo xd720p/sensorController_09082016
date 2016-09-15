@@ -1,6 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.xd720p.sensorcontroller_09082016">
+    <uses-permission android:name="android.permission.SEND_SMS"
+        android:label="@string/permlab_sendSMS"
+        android:description="@string/permdesc_sendSMS"
+        android:permissionGroup="android.permission-group.SMS"
+        android:protectionLevel="dangerous"/>
+
+    <uses-permission android:name="android.permission.RECEIVE_SMS"
+        android:label="@string/permlab_receiveSMS"
+        android:description="@string/permdesc_receiveSMS"
+        android:permissionGroup="android.permission-group.SMS"
+        android:protectionLevel="dangerous"/>
 
     <application
         android:allowBackup="true"
@@ -34,19 +45,6 @@
         <service
             android:name=".services.smsService"
             android:exported="false" />
-
-
-        <uses-permission android:name="android.permission.SEND_SMS"
-            android:label="@string/permlab_sendSMS"
-            android:description="@string/permdesc_sendSMS"
-            android:permissionGroup="android.permission-group.SMS"
-            android:protectionLevel="dangerous"/>
-
-        <uses-permission android:name="android.permission.RECEIVE_SMS"
-            android:label="@string/permlab_receiveSMS"
-            android:description="@string/permdesc_receiveSMS"
-            android:permissionGroup="android.permission-group.SMS"
-            android:protectionLevel="dangerous"/>
     </application>
 
 </manifest>

@@ -143,6 +143,8 @@ public class Sensors extends Model {
         }
 
         return res;
+
+
     }
 
     public static void updateObject(Sensors newObj, String smsName, String company) {
@@ -164,6 +166,30 @@ public class Sensors extends Model {
 
     public static void delete(String smsName, String company) {
         new Delete().from(Sensors.class).where("SMS_NAME = ? AND OBSERVATION_POINT = ?", smsName, company).execute();
+    }
+
+    public static List<Sensors> getAllActiveTSensors() {
+        List<ObservationPoints> ops = ObservationPoints.getAllActiveTPoints();
+        List<Sensors> sens = new LinkedList<Sensors>();
+
+        for (ObservationPoints item : ops) {
+           List<Sensors> temp = new Select()
+                   .from(Sensors.class)
+                   .where("OBSERVATION_POINT = ?", item.getNAME())
+                   .execute();
+
+            sens.addAll(temp);
+        }
+
+        return sens;
+
+    }
+
+    public static List<Sensors> getAllForPoint (ObservationPoints inputPoint) {
+        return new Select()
+                .from(Sensors.class)
+                .where("OBSERVATION_POINT = ?", inputPoint.getNAME())
+                .execute();
     }
 
     public static void deleteAll() {

@@ -74,6 +74,8 @@ public class Temperature extends Model {
         this.DATE_TIME = DATE_TIME;
     }
 
+    
+
 //    public static List<ObservationPoints> getItems() {
 //        return new Select()
 //                .from(ObservationPoints.class)
