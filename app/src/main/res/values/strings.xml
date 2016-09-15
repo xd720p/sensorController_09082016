@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">sensorController_09082016</string>
+    <string name="permlab_receiveSMS">Принимать смс с датчиков</string>
+    <string name="permdesc_receiveSMS">Дать разрешение приложению
+    получать данные с датчиков температуры по СМС</string>
+    <string name="permlab_sendSMS">Посылать смс на датчики</string>
+    <string name="permdesc_sendSMS">Дать разрешение приложению
+    посылать запросы на датчики температуры по СМС</string>
 </resources>

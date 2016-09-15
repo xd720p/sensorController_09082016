@@ -1,21 +1,24 @@
 package com.example.xd720p.sensorcontroller_09082016;
 
+import android.app.Activity;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.support.v7.app.ActionBar;
+import android.content.pm.PackageManager;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.telephony.SmsManager;
 import android.view.ContextMenu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageButton;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Spinner;
 
@@ -24,6 +27,7 @@ import com.example.xd720p.sensorcontroller_09082016.models.ObservationPoints;
 import com.example.xd720p.sensorcontroller_09082016.models.Sensors;
 
 import java.util.List;
+import java.util.jar.Manifest;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -37,7 +41,21 @@ public class MainActivity extends AppCompatActivity {
         ImageButton addObjectButton = (ImageButton) findViewById(R.id.add_button);
         ImageButton editObjectButton = (ImageButton) findViewById(R.id.edit_button);
         ImageButton deleteButton = (ImageButton) findViewById(R.id.delete_button);
+        ImageButton refreshButton = (ImageButton) findViewById(R.id.refresh_button);
 
+
+
+        refreshButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String phoneNumber = "+79313648503";
+                String smsBody = "*";
+
+                SmsManager smsManager = android.telephony.SmsManager.getDefault();
+                smsManager.sendTextMessage(phoneNumber, null, smsBody, null, null);
+
+            }
+        });
 
         settingsButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -223,5 +241,6 @@ public class MainActivity extends AppCompatActivity {
                 return super.onContextItemSelected(item);
         }
     }
+
 
 }

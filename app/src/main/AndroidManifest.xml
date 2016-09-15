@@ -17,19 +17,36 @@
         </activity>
         <activity android:name=".RefreshingSettingsActivity" />
         <activity android:name=".AddSensorActivity" />
-        <activity android:name=".AddObjectActivity"/>
-        <activity android:name=".EditObjectActivity"/>
+        <activity android:name=".AddObjectActivity" />
+        <activity android:name=".EditObjectActivity" />
         <activity android:name=".EditSensorActivity" />
 
-        <meta-data android:name="AA_DB_NAME" android:value="SensorContruller.db" />
-        <meta-data android:name="AA_DB_VERSION" android:value="4" />
-        <meta-data android:name="AA_MODELS"
-            android:value="com.example.xd720p.sensorcontroller_09082016.models.ElectricCounter,
-            com.example.xd720p.sensorcontroller_09082016.models.Electricity,
-            com.example.xd720p.sensorcontroller_09082016.models.ObservationPoints,
-            com.example.xd720p.sensorcontroller_09082016.models.Sensors,
-            com.example.xd720p.sensorcontroller_09082016.models.Temperature"/>
+        <meta-data
+            android:name="AA_DB_NAME"
+            android:value="SensorContruller.db" />
+        <meta-data
+            android:name="AA_DB_VERSION"
+            android:value="4" />
+        <meta-data
+            android:name="AA_MODELS"
+            android:value="com.example.xd720p.sensorcontroller_09082016.models.ElectricCounter,             com.example.xd720p.sensorcontroller_09082016.models.Electricity,             com.example.xd720p.sensorcontroller_09082016.models.ObservationPoints,             com.example.xd720p.sensorcontroller_09082016.models.Sensors,             com.example.xd720p.sensorcontroller_09082016.models.Temperature" />
 
+        <service
+            android:name=".services.smsService"
+            android:exported="false" />
+
+
+        <uses-permission android:name="android.permission.SEND_SMS"
+            android:label="@string/permlab_sendSMS"
+            android:description="@string/permdesc_sendSMS"
+            android:permissionGroup="android.permission-group.SMS"
+            android:protectionLevel="dangerous"/>
+
+        <uses-permission android:name="android.permission.RECEIVE_SMS"
+            android:label="@string/permlab_receiveSMS"
+            android:description="@string/permdesc_receiveSMS"
+            android:permissionGroup="android.permission-group.SMS"
+            android:protectionLevel="dangerous"/>
     </application>
 
 </manifest>
