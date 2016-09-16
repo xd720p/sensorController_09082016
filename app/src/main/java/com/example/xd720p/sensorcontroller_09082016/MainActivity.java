@@ -1,12 +1,15 @@
 package com.example.xd720p.sensorcontroller_09082016;
 
 import android.app.Activity;
+import android.app.ActivityManager;
+import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
@@ -30,6 +33,8 @@ import android.widget.Toast;
 import com.activeandroid.ActiveAndroid;
 import com.example.xd720p.sensorcontroller_09082016.models.ObservationPoints;
 import com.example.xd720p.sensorcontroller_09082016.models.Sensors;
+import com.example.xd720p.sensorcontroller_09082016.services.SmsAlarmReceiver;
+import com.example.xd720p.sensorcontroller_09082016.services.SmsService;
 
 import java.util.List;
 import java.util.jar.Manifest;
@@ -37,9 +42,13 @@ import java.util.jar.Manifest;
 public class MainActivity extends AppCompatActivity {
      @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+         // Ищем нужные вьюхи и запрашиваем необходимые разрешения
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ActiveAndroid.initialize(this);
+
+         makeAlarm();
 
         ImageButton settingsButton = (ImageButton) findViewById(R.id.settings_button);
         ImageButton addObjectButton = (ImageButton) findViewById(R.id.add_button);
@@ -47,21 +56,34 @@ public class MainActivity extends AppCompatActivity {
         ImageButton deleteButton = (ImageButton) findViewById(R.id.delete_button);
         ImageButton refreshButton = (ImageButton) findViewById(R.id.refresh_button);
 
+         int permissionSmsSendCheck = ContextCompat.checkSelfPermission(MainActivity.this,
+                 android.Manifest.permission.SEND_SMS);
 
+         if (permissionSmsSendCheck != PackageManager.PERMISSION_GRANTED) {
+             ActivityCompat.requestPermissions(MainActivity.this,
+                     new String[]{android.Manifest.permission.SEND_SMS}, 1);
+         }
+         // Ищем нужные вьюхи и запрашиваем необходимые разрешения
+
+
+//         SharedPreferences prefs = getSharedPreferences("com.example.xd720p.sensorcontroller_09082016",
+//                 Context.MODE_PRIVATE);
+//         SharedPreferences.OnSharedPreferenceChangeListener prefListener = new SharedPreferences.OnSharedPreferenceChangeListener() {
+//             @Override
+//             public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+//                 if (key.equals("tempPeriod")) {
+//                     makeAlarm();
+//                 }
+//             }
+//         };
+
+        //Прописываем слушателей для кнопок
         refreshButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                int permissionSmsSendCheck = ContextCompat.checkSelfPermission(MainActivity.this,
-                        android.Manifest.permission.SEND_SMS);
-
-                if (permissionSmsSendCheck != PackageManager.PERMISSION_GRANTED) {
-                    ActivityCompat.requestPermissions(MainActivity.this,
-                            new String[]{android.Manifest.permission.SEND_SMS}, 1);
-                } else {
-                    sendSms("+79218711725", "*");
-                }
-
+                Spinner objectSpinner = (Spinner) findViewById(R.id.object_spinner);
+                ObservationPoints point = ObservationPoints.findByName( objectSpinner.getSelectedItem().toString());
+                sendSms(point.getPHONE_T());
             }
         });
 
@@ -115,6 +137,10 @@ public class MainActivity extends AppCompatActivity {
                 }
             });
     }
+    //Конец onCreate()
+
+
+    //Прописываем слушателей для кнопок
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
@@ -122,7 +148,7 @@ public class MainActivity extends AppCompatActivity {
         switch (requestCode) {
             case 1: {
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    sendSms("+79218711725", "*");
+
 
                 } else {
                     AlertDialog.Builder build = new AlertDialog.Builder(MainActivity.this);
@@ -137,9 +163,13 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    // Обновляем spinner в onResume(), чтобы информация автоматически обновлялась после редактирования
     @Override
     protected void onResume() {
         super.onResume();
+        //будим часики
+
+
 
         Spinner objectSpinner = (Spinner) findViewById(R.id.object_spinner);
 
@@ -177,12 +207,9 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
-
-//////////////////////////////////////////////
-//
-
-
     }
+
+    //Диалог на подвтерждение удаления текущего объекта
     private AlertDialog AskOption()
     {
         AlertDialog myQuittingDialogBox =new AlertDialog.Builder(this)
@@ -216,15 +243,18 @@ public class MainActivity extends AppCompatActivity {
         return myQuittingDialogBox;
 
     }
+
+    //Создаём менюшку по долгому нажатию на элемент
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v,
                                     ContextMenu.ContextMenuInfo menuInfo) {
         super.onCreateContextMenu(menu, v, menuInfo);
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.temp_menu, menu);
-
     }
 
+
+    //Обрабатываем выбор пункта менюшки
     @Override
     public boolean onContextItemSelected(MenuItem item) {
         AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
@@ -271,56 +301,53 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void sendSms(String phoneNumber, String smsBody) {
-        phoneNumber = "+79218711725";
-        smsBody = "*";
-        String SMS_SENT = "SMS_SENT";
-        String SMS_DELIVERED = "SMS_DELIVERED";
 
-        PendingIntent sendPendingIntent = PendingIntent.getBroadcast(this, 0, new Intent(SMS_SENT), 0);
-        PendingIntent deliveredPendingIntent = PendingIntent.getBroadcast(this, 0, new Intent(SMS_DELIVERED), 0);
-
-        // For when the SMS has been sent
-        registerReceiver(new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context context, Intent intent) {
-                switch (getResultCode()) {
-                    case Activity.RESULT_OK:
-                        Toast.makeText(context, "SMS sent successfully", Toast.LENGTH_SHORT).show();
-                        break;
-                    case SmsManager.RESULT_ERROR_GENERIC_FAILURE:
-                        Toast.makeText(context, "Generic failure cause", Toast.LENGTH_SHORT).show();
-                        break;
-                    case SmsManager.RESULT_ERROR_NO_SERVICE:
-                        Toast.makeText(context, "Service is currently unavailable", Toast.LENGTH_SHORT).show();
-                        break;
-                    case SmsManager.RESULT_ERROR_NULL_PDU:
-                        Toast.makeText(context, "No pdu provided", Toast.LENGTH_SHORT).show();
-                        break;
-                    case SmsManager.RESULT_ERROR_RADIO_OFF:
-                        Toast.makeText(context, "Radio was explicitly turned off", Toast.LENGTH_SHORT).show();
-                        break;
-                }
-            }
-        }, new IntentFilter(SMS_SENT));
-
-        // For when the SMS has been delivered
-        registerReceiver(new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context context, Intent intent) {
-                switch (getResultCode()) {
-                    case Activity.RESULT_OK:
-                        Toast.makeText(getBaseContext(), "SMS delivered", Toast.LENGTH_SHORT).show();
-                        break;
-                    case Activity.RESULT_CANCELED:
-                        Toast.makeText(getBaseContext(), "SMS not delivered", Toast.LENGTH_SHORT).show();
-                        break;
-                }
-            }
-        }, new IntentFilter(SMS_DELIVERED));
+    //Функция отправки СМС
+    private void sendSms(String phoneNumber) {
+        String smsBody = "*";
 
         SmsManager smsManager = android.telephony.SmsManager.getDefault();
-        smsManager.sendTextMessage(phoneNumber, null, smsBody, sendPendingIntent, deliveredPendingIntent);
+        smsManager.sendTextMessage(phoneNumber, null, smsBody, null, null);
+
+    }
+
+    //а это функция для запуска AlarmManager для запросов раз в N минут
+    private void makeAlarm() {
+        cancelAlarm();
+
+        Intent i = new Intent(getApplicationContext(), SmsAlarmReceiver.class);
+
+        final PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplicationContext(), SmsAlarmReceiver.REQUEST_CODE,
+                i, PendingIntent.FLAG_UPDATE_CURRENT);
+
+        long firstMillis = System.currentTimeMillis();
+
+        SharedPreferences refreshSettings = getSharedPreferences("com.example.xd720p.sensorcontroller_09082016",
+                Context.MODE_PRIVATE);
+
+        double refreshForTValue = Double.valueOf(refreshSettings.getString("tempPeriod", "30"));
+
+        if (refreshForTValue <= 0 ) {
+            cancelAlarm();
+        } else {
+            long period = Math.round(refreshForTValue * 60 * 1000);
+            AlarmManager alarm = (AlarmManager) getSystemService(ALARM_SERVICE);
+            alarm.setRepeating(AlarmManager.RTC_WAKEUP, firstMillis,
+                    period, pendingIntent);
+        }
+    }
+
+    private void cancelAlarm() {
+        try {
+            Intent i = new Intent(getApplicationContext(), SmsAlarmReceiver.class);
+            final PendingIntent pIntent = PendingIntent.getBroadcast(getApplicationContext(), SmsAlarmReceiver.REQUEST_CODE,
+                    i, PendingIntent.FLAG_UPDATE_CURRENT);
+            AlarmManager alarm = (AlarmManager) getSystemService(ALARM_SERVICE);
+            alarm.cancel(pIntent);
+            pIntent.cancel();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
     }
 

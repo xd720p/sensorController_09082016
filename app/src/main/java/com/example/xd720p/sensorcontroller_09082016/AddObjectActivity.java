@@ -78,4 +78,6 @@ public class AddObjectActivity extends AppCompatActivity {
     private Integer parseString(String input) {
         return input.length() != 0 ? Integer.parseInt(input) : 0;
     }
+
+
 }
