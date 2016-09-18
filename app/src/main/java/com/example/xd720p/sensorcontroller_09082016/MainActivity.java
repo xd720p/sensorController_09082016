@@ -1,16 +1,14 @@
 package com.example.xd720p.sensorcontroller_09082016;
 
-import android.app.Activity;
-import android.app.ActivityManager;
+import android.Manifest;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -28,16 +26,14 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.Spinner;
-import android.widget.Toast;
 
 import com.activeandroid.ActiveAndroid;
 import com.example.xd720p.sensorcontroller_09082016.models.ObservationPoints;
 import com.example.xd720p.sensorcontroller_09082016.models.Sensors;
 import com.example.xd720p.sensorcontroller_09082016.services.SmsAlarmReceiver;
-import com.example.xd720p.sensorcontroller_09082016.services.SmsService;
 
+import java.util.Calendar;
 import java.util.List;
-import java.util.jar.Manifest;
 
 public class MainActivity extends AppCompatActivity {
      @Override
@@ -56,26 +52,19 @@ public class MainActivity extends AppCompatActivity {
         ImageButton deleteButton = (ImageButton) findViewById(R.id.delete_button);
         ImageButton refreshButton = (ImageButton) findViewById(R.id.refresh_button);
 
-         int permissionSmsSendCheck = ContextCompat.checkSelfPermission(MainActivity.this,
-                 android.Manifest.permission.SEND_SMS);
+         int permissions_all = 1;
 
-         if (permissionSmsSendCheck != PackageManager.PERMISSION_GRANTED) {
-             ActivityCompat.requestPermissions(MainActivity.this,
-                     new String[]{android.Manifest.permission.SEND_SMS}, 1);
+         String[] permissions = {Manifest.permission.SEND_SMS, Manifest.permission.READ_SMS, Manifest.permission.RECEIVE_SMS};
+
+         if (!hasPermissions(this, permissions)) {
+             ActivityCompat.requestPermissions(this, permissions, permissions_all);
          }
-         // Ищем нужные вьюхи и запрашиваем необходимые разрешения
 
 
-//         SharedPreferences prefs = getSharedPreferences("com.example.xd720p.sensorcontroller_09082016",
-//                 Context.MODE_PRIVATE);
-//         SharedPreferences.OnSharedPreferenceChangeListener prefListener = new SharedPreferences.OnSharedPreferenceChangeListener() {
-//             @Override
-//             public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-//                 if (key.equals("tempPeriod")) {
-//                     makeAlarm();
-//                 }
-//             }
-//         };
+
+    // Ищем нужные вьюхи и запрашиваем необходимые разрешения
+
+
 
         //Прописываем слушателей для кнопок
         refreshButton.setOnClickListener(new View.OnClickListener() {
@@ -316,33 +305,36 @@ public class MainActivity extends AppCompatActivity {
     private void makeAlarm() {
         cancelAlarm();
 
-        Intent i = new Intent(getApplicationContext(), SmsAlarmReceiver.class);
+        Intent i = new Intent(this, SmsAlarmReceiver.class);
 
-        final PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplicationContext(), SmsAlarmReceiver.REQUEST_CODE,
-                i, PendingIntent.FLAG_UPDATE_CURRENT);
-
-        long firstMillis = System.currentTimeMillis();
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(this.getApplicationContext(), SmsAlarmReceiver.REQUEST_CODE,
+                i, PendingIntent.FLAG_CANCEL_CURRENT);
 
         SharedPreferences refreshSettings = getSharedPreferences("com.example.xd720p.sensorcontroller_09082016",
                 Context.MODE_PRIVATE);
 
-        double refreshForTValue = Double.valueOf(refreshSettings.getString("tempPeriod", "30"));
+        double refreshForTValue = 0;
+
+        if (!refreshSettings.getString("tempPeriod", "30").equals("")) {
+            refreshForTValue = Double.valueOf(refreshSettings.getString("tempPeriod", "30"));
+        }
 
         if (refreshForTValue <= 0 ) {
             cancelAlarm();
         } else {
             long period = Math.round(refreshForTValue * 60 * 1000);
             AlarmManager alarm = (AlarmManager) getSystemService(ALARM_SERVICE);
-            alarm.setRepeating(AlarmManager.RTC_WAKEUP, firstMillis,
+            long firstMillis = System.currentTimeMillis();
+            alarm.setRepeating(AlarmManager.RTC_WAKEUP, firstMillis + period,
                     period, pendingIntent);
         }
     }
 
     private void cancelAlarm() {
         try {
-            Intent i = new Intent(getApplicationContext(), SmsAlarmReceiver.class);
-            final PendingIntent pIntent = PendingIntent.getBroadcast(getApplicationContext(), SmsAlarmReceiver.REQUEST_CODE,
-                    i, PendingIntent.FLAG_UPDATE_CURRENT);
+            Intent i = new Intent(this, SmsAlarmReceiver.class);
+            PendingIntent pIntent = PendingIntent.getBroadcast(this.getApplicationContext(), SmsAlarmReceiver.REQUEST_CODE,
+                    i, 0);
             AlarmManager alarm = (AlarmManager) getSystemService(ALARM_SERVICE);
             alarm.cancel(pIntent);
             pIntent.cancel();
@@ -350,6 +342,17 @@ public class MainActivity extends AppCompatActivity {
             e.printStackTrace();
         }
 
+    }
+
+    private boolean hasPermissions(Context context, String... permissions) {
+        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && context != null && permissions != null) {
+            for (String permission : permissions) {
+                if (ActivityCompat.checkSelfPermission(context, permission) != PackageManager.PERMISSION_GRANTED) {
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 
 }

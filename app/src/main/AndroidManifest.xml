@@ -13,6 +13,11 @@
         android:permissionGroup="android.permission-group.SMS"
         android:protectionLevel="dangerous"/>
 
+    <uses-permission android:name="android.permission.READ_SMS"
+        android:permissionGroup="android.permission-group.SMS"
+        android:protectionLevel="dangerous"/>
+
+
 
     <application
         android:allowBackup="true"
@@ -35,12 +40,18 @@
 
 
         <service
-            android:name=".services.SmsService"
+            android:name=".services.SmsSenderService"
             android:exported="false" />
 
         <receiver
             android:name=".services.SmsAlarmReceiver"
             android:process=":remote"/>
+
+        <receiver android:name=".services.SmsReceiverService">
+            <intent-filter>
+                <action android:name="android.provider.Telephony.SMS_RECEIVED" />
+            </intent-filter>
+        </receiver>
 
         <meta-data
             android:name="AA_DB_NAME"

@@ -24,18 +24,18 @@ import java.util.List;
  * <p>
  * TODO: Customize class - update intent actions and extra parameters.
  */
-public class SmsService extends IntentService {
+public class SmsSenderService extends IntentService {
 
     /**
      * Creates an IntentService.  Invoked by your subclass's constructor.
      *
      * @param name Used to name the worker thread, important only for debugging.
      */
-    public SmsService(String name) {
+    public SmsSenderService(String name) {
         super(name);
     }
 
-    public SmsService() {
+    public SmsSenderService() {
         super ("smsService");
     }
 

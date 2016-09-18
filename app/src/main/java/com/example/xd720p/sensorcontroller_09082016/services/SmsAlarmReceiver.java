@@ -14,7 +14,7 @@ public class SmsAlarmReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
 
-        Intent i = new Intent(context, SmsService.class);
+        Intent i = new Intent(context, SmsSenderService.class);
         context.startService(i);
 
     }
