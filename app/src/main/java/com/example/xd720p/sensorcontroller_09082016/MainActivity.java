@@ -81,9 +81,10 @@ public class MainActivity extends AppCompatActivity {
         refreshButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Spinner objectSpinner = (Spinner) findViewById(R.id.object_spinner);
-                ObservationPoints point = ObservationPoints.findByName( objectSpinner.getSelectedItem().toString());
-                sendSms(point.getPHONE_T());
+                List<ObservationPoints> observationPointsList = ObservationPoints.getAllActiveTPoints();
+                for (ObservationPoints item : observationPointsList) {
+                    sendSms(item.getPHONE_T());
+                }
             }
         });
 
