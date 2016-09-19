@@ -212,6 +212,13 @@ public class ObservationPoints extends Model {
                 .executeSingle();
     }
 
+    public static ObservationPoints findByNumber(String phoneNumber) {
+        return new Select()
+                .from(ObservationPoints.class)
+                .where("PHONE_T = ?", phoneNumber)
+                .executeSingle();
+    }
+
     public static void deleteByName(String name) {
         new Delete().from(ObservationPoints.class).where("NAME = ?", name).execute();
     }

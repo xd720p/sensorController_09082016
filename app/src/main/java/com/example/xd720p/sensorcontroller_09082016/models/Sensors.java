@@ -143,7 +143,15 @@ public class Sensors extends Model {
         }
 
         return res;
+    }
 
+    public static List<Sensors> getSensorsForObject(String companyName) {
+
+        return new Select(new String[]{"Id, SMS_NAME"})
+                .from(Sensors.class)
+                .where("OBSERVATION_POINT =?", companyName)
+                .orderBy("Name ASC")
+                .execute();
 
     }
 
@@ -157,7 +165,7 @@ public class Sensors extends Model {
                         newObj.getMODIFIED_AT()).where("SMS_NAME = ? AND OBSERVATION_POINT = ?", smsName, company).execute();
     }
 
-    public static Sensors findEditable(String smsName, String company) {
+    public static Sensors findBySmsNameAndPoint(String smsName, String company) {
         return new Select()
                 .from(Sensors.class)
                 .where("SMS_NAME = ? AND OBSERVATION_POINT = ?", smsName, company)

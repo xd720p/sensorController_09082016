@@ -2,14 +2,10 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.xd720p.sensorcontroller_09082016">
     <uses-permission android:name="android.permission.SEND_SMS"
-        android:label="@string/permlab_sendSMS"
-        android:description="@string/permdesc_sendSMS"
         android:permissionGroup="android.permission-group.SMS"
         android:protectionLevel="dangerous"/>
 
     <uses-permission android:name="android.permission.RECEIVE_SMS"
-        android:label="@string/permlab_receiveSMS"
-        android:description="@string/permdesc_receiveSMS"
         android:permissionGroup="android.permission-group.SMS"
         android:protectionLevel="dangerous"/>
 
@@ -58,7 +54,7 @@
             android:value="SensorContruller.db" />
         <meta-data
             android:name="AA_DB_VERSION"
-            android:value="4" />
+            android:value="6" />
         <meta-data
             android:name="AA_MODELS"
             android:value="com.example.xd720p.sensorcontroller_09082016.models.ElectricCounter,             com.example.xd720p.sensorcontroller_09082016.models.Electricity,             com.example.xd720p.sensorcontroller_09082016.models.ObservationPoints,             com.example.xd720p.sensorcontroller_09082016.models.Sensors,             com.example.xd720p.sensorcontroller_09082016.models.Temperature" />

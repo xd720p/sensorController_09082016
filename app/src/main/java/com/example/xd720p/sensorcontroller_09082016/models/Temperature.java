@@ -8,6 +8,7 @@ import com.activeandroid.query.Delete;
 import com.activeandroid.query.Select;
 import com.activeandroid.query.Update;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -19,22 +20,22 @@ import java.util.List;
 public class Temperature extends Model {
 
     @Column(name = "OBSERVATION_POINT")
-    private Integer OBSERVATION_POINT;
+    private String OBSERVATION_POINT;
 
     @Column(name = "SENSOR")
-    private Integer SENSOR;
+    private Long SENSOR;
 
     @Column(name = "VALUE")
-    private Integer VALUE;
+    private Double VALUE;
 
     @Column(name = "DATE_TIME")
-    private String DATE_TIME;
+    private Long DATE_TIME;
 
     public Temperature() {
         super();
     }
 
-    public Temperature(Integer OBSERVATION_POINT, Integer SENSOR, Integer VALUE, String DATE_TIME) {
+    public Temperature(String OBSERVATION_POINT, Long SENSOR, Double VALUE, Long DATE_TIME) {
         super();
         this.OBSERVATION_POINT = OBSERVATION_POINT;
         this.SENSOR = SENSOR;
@@ -42,36 +43,49 @@ public class Temperature extends Model {
         this.DATE_TIME = DATE_TIME;
     }
 
-    public Integer getOBSERVATION_POINT() {
+    public String getOBSERVATION_POINT() {
         return OBSERVATION_POINT;
     }
 
-    public void setOBSERVATION_POINT(Integer OBSERVATION_POINT) {
+    public void setOBSERVATION_POINT(String OBSERVATION_POINT) {
         this.OBSERVATION_POINT = OBSERVATION_POINT;
     }
 
-    public Integer getSENSOR() {
+    public Long getSENSOR() {
         return SENSOR;
     }
 
-    public void setSENSOR(Integer SENSOR) {
+    public void setSENSOR(Long SENSOR) {
         this.SENSOR = SENSOR;
     }
 
-    public Integer getVALUE() {
+    public Double getVALUE() {
         return VALUE;
     }
 
-    public void setVALUE(Integer VALUE) {
+    public void setVALUE(Double VALUE) {
         this.VALUE = VALUE;
     }
 
-    public String getDATE_TIME() {
+    public Long getDATE_TIME() {
         return DATE_TIME;
     }
 
-    public void setDATE_TIME(String DATE_TIME) {
+    public void setDATE_TIME(Long DATE_TIME) {
         this.DATE_TIME = DATE_TIME;
+    }
+
+    public static Temperature getLastSensorTemp (Long sensID) {
+        return new Select().from(Temperature.class).where("SENSOR = ?", sensID)
+                .orderBy("DATE_TIME DESC").limit(1).executeSingle();
+
+//        List<String> res = new ArrayList<>();
+//
+//        for (Temperature item: temp) {
+//            res.add(item.getVALUE().toString());
+//        }
+
+//        return res;
     }
 
     

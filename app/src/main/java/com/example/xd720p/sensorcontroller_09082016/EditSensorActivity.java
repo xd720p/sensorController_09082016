@@ -35,7 +35,7 @@ public class EditSensorActivity extends AppCompatActivity {
         EditText smsName = (EditText) findViewById(R.id.sensor_smsname_edit);
         Intent i = getIntent();
 
-        Sensors sensors = Sensors.findEditable(i.getStringExtra("smsName"), i.getStringExtra("company"));
+        Sensors sensors = Sensors.findBySmsNameAndPoint(i.getStringExtra("smsName"), i.getStringExtra("company"));
 
         companyName.setText(sensors.getOBSERVATION_POINT());
         editRoom.setText(sensors.getNAME());

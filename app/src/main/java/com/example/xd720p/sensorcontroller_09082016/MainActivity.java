@@ -17,21 +17,27 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.telephony.SmsManager;
 import android.view.ContextMenu;
+import android.view.LayoutInflater;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.Spinner;
+import android.widget.TextView;
 
 import com.activeandroid.ActiveAndroid;
 import com.example.xd720p.sensorcontroller_09082016.models.ObservationPoints;
 import com.example.xd720p.sensorcontroller_09082016.models.Sensors;
+import com.example.xd720p.sensorcontroller_09082016.models.SmsForView;
+import com.example.xd720p.sensorcontroller_09082016.models.Temperature;
 import com.example.xd720p.sensorcontroller_09082016.services.SmsAlarmReceiver;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
@@ -159,28 +165,59 @@ public class MainActivity extends AppCompatActivity {
         super.onResume();
         //будим часики
 
-
-
         Spinner objectSpinner = (Spinner) findViewById(R.id.object_spinner);
 
-        ObservationPoints observationPoints = new ObservationPoints();
         List<String> obsNames = ObservationPoints.getObjectNames();
-        List<ObservationPoints> l = ObservationPoints.getItems();
 
 
         ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, obsNames);
         spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         objectSpinner.setAdapter(spinnerAdapter);
 
+        SharedPreferences refreshSettings = getSharedPreferences("com.example.xd720p.sensorcontroller_09082016",
+                Context.MODE_PRIVATE);
+        int spinnerValue = refreshSettings.getInt("spinner", -1);
+        if (spinnerValue != -1) {
+            objectSpinner.setSelection(spinnerValue);
+        }
 
         objectSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                ListView sensorList = (ListView) findViewById(R.id.temp_list);
-                List<String> allSensors = Sensors.getObjectSMSNames(parent.getSelectedItem().toString());
-                ArrayAdapter<String> tempAdapter = new ArrayAdapter<String>(MainActivity.this, android.R.layout.simple_list_item_1, allSensors);
 
-                sensorList.setAdapter(tempAdapter);
+                int choice = position;
+                SharedPreferences refreshSettings = getSharedPreferences("com.example.xd720p.sensorcontroller_09082016",
+                        Context.MODE_PRIVATE);
+                refreshSettings.edit().putInt("spinner", choice).commit();
+
+
+                ListView sensorList = (ListView) findViewById(R.id.temp_list);
+                List<Sensors> allSensors = Sensors.getSensorsForObject(parent.getSelectedItem().toString());
+                List<String> allTemps = new ArrayList<String>();
+                // = Temperature.getLastTemps(allSensors.size());
+
+                for (int i = 0; i < allSensors.size(); i++) {
+                    allTemps.add(Temperature.getLastSensorTemp(allSensors.get(i).getId()).getVALUE().toString());
+                }
+
+                List<SmsForView> viewListSms = new ArrayList<SmsForView>();
+
+                for (int i = 0; i < allSensors.size(); i++) {
+
+                    if (allTemps.get(i).equals("-127.0")) {
+                        viewListSms.add(new SmsForView(allSensors.get(i).getSMS_NAME(), "---"));
+                    } else {
+                        viewListSms.add(new SmsForView(allSensors.get(i).getSMS_NAME(), allTemps.get(i)));
+                    }
+
+                }
+
+            //    ArrayAdapter<String> tempAdapter = new ArrayAdapter<String>(MainActivity.this, android.R.layout.simple_list_item_1, allSensors);
+
+                sensorList.setAdapter(new ListViewAdapter(MainActivity.this, -1, viewListSms));
+
+
+
                 registerForContextMenu(sensorList);
 
                 Button addFirst = (Button) findViewById(R.id.add_first_button);
@@ -353,6 +390,51 @@ public class MainActivity extends AppCompatActivity {
             }
         }
         return true;
+    }
+
+
+
+
+
+
+
+
+
+    public class ListViewAdapter extends ArrayAdapter<SmsForView> {
+
+        public ListViewAdapter(final Context context, final int resource, final List<SmsForView> objects) {
+            super(context, resource, objects);
+        }
+
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+            ViewHolder holder;
+            View view = convertView;
+
+            if (convertView != null) {
+                holder = (ViewHolder) convertView.getTag();
+            } else {
+                final LayoutInflater layoutInflater = LayoutInflater.from(MainActivity.this);
+                view = layoutInflater.inflate(R.layout.temperature_layout, parent, false);
+                holder = new ViewHolder();
+                view.setTag(holder);
+                holder.name = (TextView) view.findViewById(R.id.temperature_sms_list_view);
+                holder.temperature = (TextView) view.findViewById(R.id.temperature_list_view);
+            }
+
+            final SmsForView item = getItem(position);
+            holder.name.setText(item.getSmsName());
+            holder.temperature.setText(item.getTemperature());
+
+            return view;
+        }
+
+        private class ViewHolder {
+
+            TextView name;
+            TextView temperature;
+
+        }
     }
 
 }
