@@ -40,6 +40,7 @@ import com.example.xd720p.sensorcontroller_09082016.models.Temperature;
 import com.example.xd720p.sensorcontroller_09082016.services.SmsAlarmReceiver;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
@@ -171,6 +172,7 @@ public class MainActivity extends AppCompatActivity {
         super.onResume();
         //будим часики
 
+
         if (!mIsReceiverRegistered) {
             if (mReceiver == null)
                 mReceiver = new UpdateReceiver();
@@ -210,13 +212,32 @@ public class MainActivity extends AppCompatActivity {
 
                 List<Sensors> allSensors = Sensors.getSensorsForObject(companyID);
                 List<String> allTemps = new ArrayList<String>();
-                // = Temperature.getLastTemps(allSensors.size());
+
+                TextView date = (TextView) findViewById(R.id.date_text);
+                TextView time = (TextView) findViewById(R.id.time_text);
+
+                Temperature temp = Temperature.getLastSensorTemp(allSensors.get(0).getId());
+
+                Calendar cal = Calendar.getInstance();
+                cal.setTimeInMillis(temp.getDATE_TIME());
+                int month = cal.get(Calendar.MONTH)+2;
+                time.setText(cal.get(Calendar.DAY_OF_MONTH) + "." + month + "." + cal.get(Calendar.YEAR));
+                date.setText(cal.get(Calendar.HOUR_OF_DAY) + ":" + cal.get(Calendar.MINUTE));
+
+
+
+
 
                 for (int i = 0; i < allSensors.size(); i++) {
                     if (Temperature.getLastSensorTemp(allSensors.get(i).getId()) == null) {
                         allTemps.add("---");
                     } else {
-                        allTemps.add(Temperature.getLastSensorTemp(allSensors.get(i).getId()).getVALUE().toString());
+                        if (Temperature.getLastSensorTemp(allSensors.get(i).getId()).getVALUE() > 0) {
+                            allTemps.add("+" + Temperature.getLastSensorTemp(allSensors.get(i).getId()).getVALUE().toString() + " \u00b0" + "C");
+                        } else {
+                            allTemps.add(Temperature.getLastSensorTemp(allSensors.get(i).getId()).getVALUE().toString() + " \u00b0" + "C");
+                        }
+
                     }
 
 
