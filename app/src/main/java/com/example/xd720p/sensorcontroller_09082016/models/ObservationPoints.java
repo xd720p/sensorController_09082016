@@ -219,6 +219,24 @@ public class ObservationPoints extends Model {
                 .executeSingle();
     }
 
+    public static Long getIdByName (String name) {
+        ObservationPoints point = new Select()
+                .from(ObservationPoints.class)
+                .where("NAME = ?", name)
+                .executeSingle();
+
+        return point.getId();
+    }
+
+    public static String getNameById(Long id) {
+        ObservationPoints point = new Select()
+                .from(ObservationPoints.class)
+                .where("_id = ", id)
+                .executeSingle();
+
+        return point.getNAME();
+    }
+
     public static void deleteByName(String name) {
         new Delete().from(ObservationPoints.class).where("NAME = ?", name).execute();
     }

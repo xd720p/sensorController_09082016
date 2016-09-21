@@ -3,15 +3,17 @@ package com.example.xd720p.sensorcontroller_09082016;
 import android.Manifest;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Build;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -38,10 +40,12 @@ import com.example.xd720p.sensorcontroller_09082016.models.Temperature;
 import com.example.xd720p.sensorcontroller_09082016.services.SmsAlarmReceiver;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
+    boolean mIsReceiverRegistered = false;
+    UpdateReceiver mReceiver = null;
+
      @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -127,7 +131,9 @@ public class MainActivity extends AppCompatActivity {
                     Intent i = new Intent(getApplicationContext(), AddSensorActivity.class);
                     Spinner objectSpinner = (Spinner) findViewById(R.id.object_spinner);
 
-                    i.putExtra("company", objectSpinner.getSelectedItem().toString());
+                    Long compID = ObservationPoints.getIdByName(objectSpinner.getSelectedItem().toString());
+
+                    i.putExtra("company", compID);
 
                     startActivity(i);
                 }
@@ -165,6 +171,13 @@ public class MainActivity extends AppCompatActivity {
         super.onResume();
         //будим часики
 
+        if (!mIsReceiverRegistered) {
+            if (mReceiver == null)
+                mReceiver = new UpdateReceiver();
+            registerReceiver(mReceiver, new IntentFilter("android.provider.Telephony.SMS_RECEIVED"));
+            mIsReceiverRegistered = true;
+        }
+
         Spinner objectSpinner = (Spinner) findViewById(R.id.object_spinner);
 
         List<String> obsNames = ObservationPoints.getObjectNames();
@@ -192,12 +205,21 @@ public class MainActivity extends AppCompatActivity {
 
 
                 ListView sensorList = (ListView) findViewById(R.id.temp_list);
-                List<Sensors> allSensors = Sensors.getSensorsForObject(parent.getSelectedItem().toString());
+
+                Long companyID = ObservationPoints.getIdByName(parent.getSelectedItem().toString());
+
+                List<Sensors> allSensors = Sensors.getSensorsForObject(companyID);
                 List<String> allTemps = new ArrayList<String>();
                 // = Temperature.getLastTemps(allSensors.size());
 
                 for (int i = 0; i < allSensors.size(); i++) {
-                    allTemps.add(Temperature.getLastSensorTemp(allSensors.get(i).getId()).getVALUE().toString());
+                    if (Temperature.getLastSensorTemp(allSensors.get(i).getId()) == null) {
+                        allTemps.add("---");
+                    } else {
+                        allTemps.add(Temperature.getLastSensorTemp(allSensors.get(i).getId()).getVALUE().toString());
+                    }
+
+
                 }
 
                 List<SmsForView> viewListSms = new ArrayList<SmsForView>();
@@ -236,6 +258,17 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    @Override
+    protected void onPause() {
+        if (mIsReceiverRegistered) {
+            unregisterReceiver(mReceiver);
+            mReceiver = null;
+            mIsReceiverRegistered = false;
+        }
+
+        super.onPause();
+    }
+
     //Диалог на подвтерждение удаления текущего объекта
     private AlertDialog AskOption()
     {
@@ -245,21 +278,25 @@ public class MainActivity extends AppCompatActivity {
                 .setMessage("Удaлить текущий объект?")
 
 
-                .setPositiveButton("Delete", new DialogInterface.OnClickListener() {
+                .setPositiveButton("Удалить", new DialogInterface.OnClickListener() {
 
                     public void onClick(DialogInterface dialog, int whichButton) {
                         Spinner objectSpinner = (Spinner) findViewById(R.id.object_spinner);
                         ObservationPoints.deleteByName(objectSpinner.getSelectedItem().toString());
                         dialog.dismiss();
+                        final Intent i = getIntent();
+                        i.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                        overridePendingTransition(0, 0);
                         finish();
                         startActivity(getIntent());
+                        overridePendingTransition(0, 0);
                     }
 
                 })
 
 
 
-                .setNegativeButton("cancel", new DialogInterface.OnClickListener() {
+                .setNegativeButton("Отменить", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
 
                         dialog.dismiss();
@@ -290,7 +327,9 @@ public class MainActivity extends AppCompatActivity {
                 Intent i = new Intent(getApplicationContext(), AddSensorActivity.class);
                 Spinner objectSpinner = (Spinner) findViewById(R.id.object_spinner);
 
-                i.putExtra("company", objectSpinner.getSelectedItem().toString());
+                Long objectID = ObservationPoints.getIdByName(objectSpinner.getSelectedItem().toString());
+
+                i.putExtra("company", objectID);
 
                 startActivity(i);
                 return true;
@@ -298,10 +337,20 @@ public class MainActivity extends AppCompatActivity {
                 int pos = info.position;
                 ListView sensorList = (ListView) findViewById(R.id.temp_list);
                 String smsName = sensorList.getItemAtPosition(pos).toString();
+
+                int start = smsName.indexOf('\'');
+                String temp = smsName.substring(start+1);
+                int end = temp.indexOf('\'');
+                smsName = temp.substring(0, end);
+
+
                 objectSpinner = (Spinner) findViewById(R.id.object_spinner);
 
                 Intent p = new Intent(getApplicationContext(), EditSensorActivity.class);
-                p.putExtra("company", objectSpinner.getSelectedItem().toString());
+
+                Long objectIdentificator = ObservationPoints.getIdByName(objectSpinner.getSelectedItem().toString());
+
+                p.putExtra("company", objectIdentificator);
                 p.putExtra("smsName", smsName);
 
                 startActivity(p);
@@ -312,14 +361,29 @@ public class MainActivity extends AppCompatActivity {
                 sensorList = (ListView) findViewById(R.id.temp_list);
                 smsName = sensorList.getItemAtPosition(pos).toString();
 
+                int starts = smsName.indexOf('\'');
+                String temps = smsName.substring(starts+1);
+                int ends = temps.indexOf('\'');
+                smsName = temps.substring(0, ends);
+
                 objectSpinner = (Spinner) findViewById(R.id.object_spinner);
 
-                Sensors.delete(smsName, objectSpinner.getSelectedItem().toString());
+                Long compID = ObservationPoints.getIdByName(objectSpinner.getSelectedItem().toString());
 
-                List<String> allSensors = Sensors.getObjectSMSNames(objectSpinner.getSelectedItem().toString());
-                ArrayAdapter<String> tempAdapter = new ArrayAdapter<String>(MainActivity.this, android.R.layout.simple_list_item_1, allSensors);
+                Sensors.delete(smsName, compID);
+                final Intent ps = getIntent();
+                ps.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                overridePendingTransition(0, 0);
+                finish();
+                startActivity(getIntent());
+                overridePendingTransition(0, 0);
 
-                sensorList.setAdapter(tempAdapter);
+//                Long compsID = ObservationPoints.getIdByName(objectSpinner.getSelectedItem().toString());
+//
+//                List<String> allSensors = Sensors.getObjectSMSNames(compsID);
+//                ArrayAdapter<String> tempAdapter = new ArrayAdapter<String>(MainActivity.this, android.R.layout.simple_list_item_1, allSensors);
+//
+//                sensorList.setAdapter(tempAdapter);
 
 
                 return true;
@@ -397,10 +461,7 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-
-
-
-    public class ListViewAdapter extends ArrayAdapter<SmsForView> {
+    private class ListViewAdapter extends ArrayAdapter<SmsForView> {
 
         public ListViewAdapter(final Context context, final int resource, final List<SmsForView> objects) {
             super(context, resource, objects);
@@ -433,6 +494,37 @@ public class MainActivity extends AppCompatActivity {
 
             TextView name;
             TextView temperature;
+
+        }
+    }
+
+    public class UpdateReceiver extends BroadcastReceiver {
+
+
+
+        public UpdateReceiver() {
+
+        }
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+
+            final Handler handler = new Handler();
+
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+
+                    final Intent i = getIntent();
+                    i.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                    overridePendingTransition(0, 0);
+                    finish();
+                    startActivity(getIntent());
+                    overridePendingTransition(0, 0);
+
+                }
+            }, 300);
+
 
         }
     }

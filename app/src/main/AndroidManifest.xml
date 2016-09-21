@@ -49,12 +49,14 @@
             </intent-filter>
         </receiver>
 
+
+
         <meta-data
             android:name="AA_DB_NAME"
             android:value="SensorContruller.db" />
         <meta-data
             android:name="AA_DB_VERSION"
-            android:value="6" />
+            android:value="7" />
         <meta-data
             android:name="AA_MODELS"
             android:value="com.example.xd720p.sensorcontroller_09082016.models.ElectricCounter,             com.example.xd720p.sensorcontroller_09082016.models.Electricity,             com.example.xd720p.sensorcontroller_09082016.models.ObservationPoints,             com.example.xd720p.sensorcontroller_09082016.models.Sensors,             com.example.xd720p.sensorcontroller_09082016.models.Temperature" />

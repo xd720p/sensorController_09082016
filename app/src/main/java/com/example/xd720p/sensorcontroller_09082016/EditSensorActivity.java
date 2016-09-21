@@ -9,6 +9,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
+import com.example.xd720p.sensorcontroller_09082016.models.ObservationPoints;
 import com.example.xd720p.sensorcontroller_09082016.models.Sensors;
 
 import java.text.SimpleDateFormat;
@@ -33,11 +34,14 @@ public class EditSensorActivity extends AppCompatActivity {
         EditText sensorIndex = (EditText) findViewById(R.id.sensor_index_edit);
         EditText sensorNumb = (EditText) findViewById(R.id.sensor_position_edit);
         EditText smsName = (EditText) findViewById(R.id.sensor_smsname_edit);
-        Intent i = getIntent();
+        final Intent i = getIntent();
 
-        Sensors sensors = Sensors.findBySmsNameAndPoint(i.getStringExtra("smsName"), i.getStringExtra("company"));
+        Sensors sensors = Sensors.findBySmsNameAndPoint(i.getStringExtra("smsName"), i.getLongExtra("company", 0));
 
-        companyName.setText(sensors.getOBSERVATION_POINT());
+
+        String company = ObservationPoints.load(ObservationPoints.class, sensors.getOBSERVATION_POINT()).getNAME();
+
+        companyName.setText(company);
         editRoom.setText(sensors.getNAME());
         sensorIndex.setText(sensors.getCODE_NAME());
         sensorNumb.setText(String.valueOf(sensors.getPOSITION()));
@@ -57,7 +61,7 @@ public class EditSensorActivity extends AppCompatActivity {
                 SimpleDateFormat df = new SimpleDateFormat("dd-MMM-yyyy-HH-mm-ss");
                 String currentDate = df.format(c.getTime());
 
-                Sensors sensor = new Sensors("",
+                Sensors sensor = new Sensors(i.getLongExtra("company", 0),
                         parseString(sensorNumb.getText().toString()), 0,
                         editRoom.getText().toString(),
                         sensorIndex.getText().toString(),
@@ -65,7 +69,10 @@ public class EditSensorActivity extends AppCompatActivity {
                         "", currentDate);
 
                 Intent i = getIntent();
-                sensor.updateObject(sensor, i.getStringExtra("smsName"), companyName.getText().toString());
+
+                Long compId = ObservationPoints.getIdByName(companyName.getText().toString());
+
+                sensor.updateObject(sensor, i.getStringExtra("smsName"), compId);
                 finish();
             }
         });

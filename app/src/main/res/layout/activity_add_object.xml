@@ -135,7 +135,7 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:paddingTop="50dp"
-        >
+        android:visibility="gone">
 
         <TextView
             android:id="@+id/electricty_view"
@@ -168,7 +168,7 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:weightSum="3"
-        >
+        android:visibility="gone">
 
         <TextView
             android:id="@+id/elec_sim_view"
@@ -196,7 +196,7 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:weightSum="3"
-        >
+        android:visibility="gone">
 
         <TextView
             android:id="@+id/elec_password_view"

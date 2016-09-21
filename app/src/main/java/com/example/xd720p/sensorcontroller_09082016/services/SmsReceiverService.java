@@ -54,6 +54,8 @@ public class SmsReceiverService extends BroadcastReceiver {
 
             saveToDB(parseSms(str), sender);
 
+
+
         }
     }
 
@@ -100,14 +102,14 @@ public class SmsReceiverService extends BroadcastReceiver {
         long time = System.currentTimeMillis();
 
         for (Map.Entry<String, Double> entry : input.entrySet()) {
-            existingSensor = Sensors.findBySmsNameAndPoint(entry.getKey(), op.getNAME());
+            existingSensor = Sensors.findBySmsNameAndPoint(entry.getKey(), op.getId());
 
             if (existingSensor != null) {
                 temp = new Temperature(op.getNAME(), existingSensor.getId(), entry.getValue(), time);
                 temp.save();
                 existingSensor = null;
             } else {
-                sensors = new Sensors(op.getNAME(), 0, 1, "", "", entry.getKey(), currentDate, currentDate);
+                sensors = new Sensors(op.getId(), 0, 1, "", "", entry.getKey(), currentDate, currentDate);
                 sensors.save();
                 temp = new Temperature(op.getNAME(), sensors.getId(), entry.getValue(), time);
                 temp.save();

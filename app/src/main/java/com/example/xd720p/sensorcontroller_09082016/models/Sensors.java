@@ -20,7 +20,7 @@ import java.util.List;
 public class Sensors extends Model {
 
     @Column(name = "OBSERVATION_POINT")
-    private String OBSERVATION_POINT;
+    private Long OBSERVATION_POINT;
 
     @Column(name = "POSITION")
     private Integer POSITION;
@@ -47,7 +47,7 @@ public class Sensors extends Model {
         super();
     }
 
-    public Sensors(String OBSERVATION_POINT, Integer POSITION, Integer ACTIVE, String NAME, String CODE_NAME, String SMS_NAME, String CREATED_AT, String MODIFIED_AT) {
+    public Sensors(Long OBSERVATION_POINT, Integer POSITION, Integer ACTIVE, String NAME, String CODE_NAME, String SMS_NAME, String CREATED_AT, String MODIFIED_AT) {
         super();
         this.OBSERVATION_POINT = OBSERVATION_POINT;
         this.POSITION = POSITION;
@@ -59,11 +59,11 @@ public class Sensors extends Model {
         this.MODIFIED_AT = MODIFIED_AT;
     }
 
-    public String getOBSERVATION_POINT() {
+    public Long getOBSERVATION_POINT() {
         return OBSERVATION_POINT;
     }
 
-    public void setOBSERVATION_POINT(String OBSERVATION_POINT) {
+    public void setOBSERVATION_POINT(Long OBSERVATION_POINT) {
         this.OBSERVATION_POINT = OBSERVATION_POINT;
     }
 
@@ -129,11 +129,11 @@ public class Sensors extends Model {
                 .execute();
     }
 
-    public static List<String> getObjectSMSNames(String companyName) {
+    public static List<String> getObjectSMSNames(Long companyID) {
 
         List<Sensors> temp = new Select(new String[]{"Id, SMS_NAME"})
                 .from(Sensors.class)
-                .where("OBSERVATION_POINT =?", companyName)
+                .where("OBSERVATION_POINT =?", companyID)
                 .orderBy("Name ASC")
                 .execute();
         List<String> res = new ArrayList<String>();
@@ -145,17 +145,17 @@ public class Sensors extends Model {
         return res;
     }
 
-    public static List<Sensors> getSensorsForObject(String companyName) {
+    public static List<Sensors> getSensorsForObject(Long companyID) {
 
         return new Select(new String[]{"Id, SMS_NAME"})
                 .from(Sensors.class)
-                .where("OBSERVATION_POINT =?", companyName)
-                .orderBy("Name ASC")
+                .where("OBSERVATION_POINT = ?", companyID)
+                .orderBy("SMS_NAME ASC")
                 .execute();
 
     }
 
-    public static void updateObject(Sensors newObj, String smsName, String company) {
+    public static void updateObject(Sensors newObj, String smsName, Long company) {
         new Update(Sensors.class)
                 .set("POSITION = ?, NAME = ?, CODE_NAME = ?, SMS_NAME = ?, MODIFIED_AT = ?",
                         newObj.getPOSITION(),
@@ -165,15 +165,15 @@ public class Sensors extends Model {
                         newObj.getMODIFIED_AT()).where("SMS_NAME = ? AND OBSERVATION_POINT = ?", smsName, company).execute();
     }
 
-    public static Sensors findBySmsNameAndPoint(String smsName, String company) {
+    public static Sensors findBySmsNameAndPoint(String smsName, Long company) {
         return new Select()
                 .from(Sensors.class)
                 .where("SMS_NAME = ? AND OBSERVATION_POINT = ?", smsName, company)
                 .executeSingle();
     }
 
-    public static void delete(String smsName, String company) {
-        new Delete().from(Sensors.class).where("SMS_NAME = ? AND OBSERVATION_POINT = ?", smsName, company).execute();
+    public static void delete(String smsName, Long compID) {
+        new Delete().from(Sensors.class).where("SMS_NAME = ? AND OBSERVATION_POINT = ?", smsName, compID).execute();
     }
 
     public static List<Sensors> getAllActiveTSensors() {

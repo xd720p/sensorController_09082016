@@ -49,7 +49,7 @@ public class AddSensorActivity extends AppCompatActivity {
                 SimpleDateFormat df = new SimpleDateFormat("dd-MMM-yyyy-HH-mm-ss");
                 String currentDate = df.format(c.getTime());
 
-                Sensors sensor = new Sensors(i.getStringExtra("company"),
+                Sensors sensor = new Sensors(i.getLongExtra("company", 0),
                         parseString(sensorNumb.getText().toString()), 0,
                         editRoom.getText().toString(),
                         sensorIndex.getText().toString(),

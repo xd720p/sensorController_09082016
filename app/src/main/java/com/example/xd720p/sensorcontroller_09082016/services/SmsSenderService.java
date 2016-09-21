@@ -57,6 +57,8 @@ public class SmsSenderService extends IntentService {
         for (ObservationPoints item : observationPointsList) {
            sendSms(item.getPHONE_T());
         }
+
+
         stopSelf();
     }
 
