@@ -300,10 +300,10 @@
                 android:layout_marginTop="15dp">
 
                 <Button
-                    android:id="@+id/add_first_button"
+                    android:id="@+id/request_sensors"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Добавить первый датчик"
+                    android:text="Запрос датчиков"
                     android:background="@drawable/button_press"
                     android:layout_marginRight="5dp"
                     android:padding="10dp"

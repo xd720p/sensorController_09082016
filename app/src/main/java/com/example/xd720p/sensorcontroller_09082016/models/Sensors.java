@@ -173,6 +173,10 @@ public class Sensors extends Model {
     }
 
     public static void delete(String smsName, Long compID) {
+        Sensors sens = Sensors.findBySmsNameAndPoint(smsName, compID);
+
+        Temperature.deleteBySensor(sens.getId());
+
         new Delete().from(Sensors.class).where("SMS_NAME = ? AND OBSERVATION_POINT = ?", smsName, compID).execute();
     }
 

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -7,6 +7,95 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
+    android:orientation="vertical"
     tools:context="com.example.xd720p.sensorcontroller_09082016.SaveActivity">
 
-</RelativeLayout>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Выберите объект"/>
+
+    <Spinner
+        android:id="@+id/objects_spinner"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="#000000"
+        style="@android:style/Widget.Holo.Light.Spinner"/>
+
+    <Button
+        android:id="@+id/first_date_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Выбрать начальную дату"
+        android:background="@drawable/button_press"
+        android:padding="10dp"
+        android:textColor="#FFFFFF"
+        />
+
+    <TextView
+        android:id="@+id/first_date_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <Button
+        android:id="@+id/last_date_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Выбрать конечную дату"
+        android:background="@drawable/button_press"
+        android:padding="10dp"
+        android:textColor="#FFFFFF"
+        />
+    <TextView
+        android:id="@+id/last_date_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <Button
+        android:id="@+id/find_path"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Выбрать папку"
+        android:background="@drawable/button_press"
+        android:padding="10dp"
+        android:textColor="#FFFFFF"
+        />
+    <TextView
+        android:id="@+id/path_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:layout_weight="1"
+        android:orientation="horizontal"
+        android:paddingTop="50dp"
+        >
+
+        <Button
+            android:id="@+id/ok_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Сохранить"
+            android:background="@drawable/button_press"
+            android:layout_marginRight="5dp"
+            android:padding="10dp"
+            android:textColor="#FFFFFF"
+            android:visibility="gone"
+            />
+
+        <Button
+            android:id="@+id/cancel_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/button_press"
+            android:textColor="#FFFFFF"
+            android:text="Отмена"
+            android:layout_marginLeft="5dp"
+            android:padding="10dp"/>
+
+    </LinearLayout>
+
+</LinearLayout>

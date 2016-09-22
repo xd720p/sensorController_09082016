@@ -105,13 +105,13 @@ public class SmsReceiverService extends BroadcastReceiver {
             existingSensor = Sensors.findBySmsNameAndPoint(entry.getKey(), op.getId());
 
             if (existingSensor != null) {
-                temp = new Temperature(op.getNAME(), existingSensor.getId(), entry.getValue(), time);
+                temp = new Temperature(op.getId(), existingSensor.getId(), entry.getValue(), time);
                 temp.save();
                 existingSensor = null;
             } else {
                 sensors = new Sensors(op.getId(), 0, 1, "", "", entry.getKey(), currentDate, currentDate);
                 sensors.save();
-                temp = new Temperature(op.getNAME(), sensors.getId(), entry.getValue(), time);
+                temp = new Temperature(op.getId(), sensors.getId(), entry.getValue(), time);
                 temp.save();
             }
         }

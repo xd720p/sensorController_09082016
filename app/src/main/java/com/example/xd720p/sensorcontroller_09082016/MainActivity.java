@@ -1,6 +1,7 @@
 package com.example.xd720p.sensorcontroller_09082016;
 
 import android.Manifest;
+import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
@@ -31,6 +32,7 @@ import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.activeandroid.ActiveAndroid;
 import com.example.xd720p.sensorcontroller_09082016.models.ObservationPoints;
@@ -58,6 +60,7 @@ public class MainActivity extends AppCompatActivity {
          makeAlarm();
 
         ImageButton settingsButton = (ImageButton) findViewById(R.id.settings_button);
+         ImageButton saveButton = (ImageButton) findViewById(R.id.save_button);
         ImageButton addObjectButton = (ImageButton) findViewById(R.id.add_button);
         ImageButton editObjectButton = (ImageButton) findViewById(R.id.edit_button);
         ImageButton deleteButton = (ImageButton) findViewById(R.id.delete_button);
@@ -65,7 +68,8 @@ public class MainActivity extends AppCompatActivity {
 
          int permissions_all = 1;
 
-         String[] permissions = {Manifest.permission.SEND_SMS, Manifest.permission.READ_SMS, Manifest.permission.RECEIVE_SMS};
+         String[] permissions = {Manifest.permission.SEND_SMS, Manifest.permission.READ_SMS, Manifest.permission.RECEIVE_SMS,
+                 Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE};
 
          if (!hasPermissions(this, permissions)) {
              ActivityCompat.requestPermissions(this, permissions, permissions_all);
@@ -76,8 +80,16 @@ public class MainActivity extends AppCompatActivity {
     // Ищем нужные вьюхи и запрашиваем необходимые разрешения
 
 
-
         //Прописываем слушателей для кнопок
+
+         saveButton.setOnClickListener(new View.OnClickListener() {
+             @Override
+             public void onClick(View v) {
+                 Intent i = new Intent(getApplicationContext(), SaveActivity.class);
+                 startActivity(i);
+             }
+         });
+
         refreshButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -124,7 +136,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-           Button addFirst = (Button) findViewById(R.id.add_first_button);
+           Button addFirst = (Button) findViewById(R.id.request_sensors);
 
             addFirst.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -133,10 +145,9 @@ public class MainActivity extends AppCompatActivity {
                     Spinner objectSpinner = (Spinner) findViewById(R.id.object_spinner);
 
                     Long compID = ObservationPoints.getIdByName(objectSpinner.getSelectedItem().toString());
+                    ObservationPoints op = ObservationPoints.load(ObservationPoints.class, compID);
 
-                    i.putExtra("company", compID);
-
-                    startActivity(i);
+                    sendSms(op.getPHONE_T());
                 }
             });
     }
@@ -227,7 +238,7 @@ public class MainActivity extends AppCompatActivity {
 
                         Calendar cal = Calendar.getInstance();
                         cal.setTimeInMillis(temp.getDATE_TIME());
-                        int month = cal.get(Calendar.MONTH)+2;
+                        int month = cal.get(Calendar.MONTH)+1;
                         time.setText(cal.get(Calendar.DAY_OF_MONTH) + "." + month + "." + cal.get(Calendar.YEAR));
                         date.setText(cal.get(Calendar.HOUR_OF_DAY) + ":" + cal.get(Calendar.MINUTE));
                     }
@@ -253,7 +264,7 @@ public class MainActivity extends AppCompatActivity {
 
                 for (int i = 0; i < allSensors.size(); i++) {
 
-                    if (allTemps.get(i).equals("-127.0")) {
+                    if (allTemps.get(i).equals("-127.0" + " \u00b0" + "C")) {
                         viewListSms.add(new SmsForView(allSensors.get(i).getSMS_NAME(), "---", allSensors.get(i).getNAME()));
                     } else {
                         viewListSms.add(new SmsForView(allSensors.get(i).getSMS_NAME(), allTemps.get(i), allSensors.get(i).getNAME()));
@@ -269,7 +280,7 @@ public class MainActivity extends AppCompatActivity {
 
                 registerForContextMenu(sensorList);
 
-                Button addFirst = (Button) findViewById(R.id.add_first_button);
+                Button addFirst = (Button) findViewById(R.id.request_sensors);
                 if (allSensors.size() == 0) {
                     addFirst.setVisibility(View.VISIBLE);
                     addFirst.setClickable(true);
@@ -426,6 +437,8 @@ public class MainActivity extends AppCompatActivity {
 
         SmsManager smsManager = android.telephony.SmsManager.getDefault();
         smsManager.sendTextMessage(phoneNumber, null, smsBody, null, null);
+
+        Toast.makeText(getApplicationContext(), "Отправлен запрос температур", Toast.LENGTH_LONG).show();
 
     }
 

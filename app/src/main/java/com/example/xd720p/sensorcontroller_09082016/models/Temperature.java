@@ -20,7 +20,7 @@ import java.util.List;
 public class Temperature extends Model {
 
     @Column(name = "OBSERVATION_POINT")
-    private String OBSERVATION_POINT;
+    private Long OBSERVATION_POINT;
 
     @Column(name = "SENSOR")
     private Long SENSOR;
@@ -35,7 +35,7 @@ public class Temperature extends Model {
         super();
     }
 
-    public Temperature(String OBSERVATION_POINT, Long SENSOR, Double VALUE, Long DATE_TIME) {
+    public Temperature(Long OBSERVATION_POINT, Long SENSOR, Double VALUE, Long DATE_TIME) {
         super();
         this.OBSERVATION_POINT = OBSERVATION_POINT;
         this.SENSOR = SENSOR;
@@ -43,11 +43,11 @@ public class Temperature extends Model {
         this.DATE_TIME = DATE_TIME;
     }
 
-    public String getOBSERVATION_POINT() {
+    public Long getOBSERVATION_POINT() {
         return OBSERVATION_POINT;
     }
 
-    public void setOBSERVATION_POINT(String OBSERVATION_POINT) {
+    public void setOBSERVATION_POINT(Long OBSERVATION_POINT) {
         this.OBSERVATION_POINT = OBSERVATION_POINT;
     }
 
@@ -78,16 +78,21 @@ public class Temperature extends Model {
     public static Temperature getLastSensorTemp (Long sensID) {
         return new Select().from(Temperature.class).where("SENSOR = ?", sensID)
                 .orderBy("DATE_TIME DESC").limit(1).executeSingle();
-
-//        List<String> res = new ArrayList<>();
-//
-//        for (Temperature item: temp) {
-//            res.add(item.getVALUE().toString());
-//        }
-
-//        return res;
     }
 
+    public static List<Temperature> getSensorTemps (Long sensID) {
+        return new Select().from(Temperature.class).where("SENSOR = ?", sensID)
+                .orderBy("DATE_TIME DESC").execute();
+    }
+
+    public static List<Temperature> getTempsForObjByDate(Long startDate, Long lastDate, Long objId) {
+        return new Select().from(Temperature.class).where("OBSERVATION_POINT = ? AND DATE_TIME > ? AND DATE_TIME < ?"
+        , objId, startDate, lastDate).orderBy("DATE_TIME ASC").execute();
+    }
+
+    public static void deleteBySensor(Long sensID) {
+        new Delete().from(Temperature.class).where("SENSOR = ?", sensID).execute();
+    }
     
 
 //    public static List<ObservationPoints> getItems() {
