@@ -147,7 +147,7 @@ public class Sensors extends Model {
 
     public static List<Sensors> getSensorsForObject(Long companyID) {
 
-        return new Select(new String[]{"Id, SMS_NAME"})
+        return new Select()
                 .from(Sensors.class)
                 .where("OBSERVATION_POINT = ?", companyID)
                 .orderBy("SMS_NAME ASC")

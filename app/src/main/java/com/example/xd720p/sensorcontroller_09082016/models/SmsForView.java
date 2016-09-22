@@ -8,9 +8,22 @@ public class SmsForView {
 
     private String temperature;
 
-    public SmsForView(final String smsName, final String temperature) {
+
+
+    private String sensorName;
+
+    public SmsForView(final String smsName, final String temperature, final String sensorName) {
         this.smsName = smsName;
         this.temperature = temperature;
+        this.sensorName = sensorName;
+    }
+
+    public String getSensorName() {
+        return sensorName;
+    }
+
+    public void setSensorName(String sensorName) {
+        this.sensorName = sensorName;
     }
 
     public String getSmsName() {
@@ -34,6 +47,7 @@ public class SmsForView {
         return "Sms{" +
                 "smsName='" + smsName + '\'' +
                 ", temperature='" + temperature + '\'' +
+                ", sensorName=" + sensorName + '\'' +
                 '}';
     }
 

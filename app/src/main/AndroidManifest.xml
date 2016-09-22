@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.xd720p.sensorcontroller_09082016">
-    <uses-permission android:name="android.permission.SEND_SMS"
+
+    <uses-permission
+        android:name="android.permission.SEND_SMS"
         android:permissionGroup="android.permission-group.SMS"
-        android:protectionLevel="dangerous"/>
-
-    <uses-permission android:name="android.permission.RECEIVE_SMS"
+        android:protectionLevel="dangerous" />
+    <uses-permission
+        android:name="android.permission.RECEIVE_SMS"
         android:permissionGroup="android.permission-group.SMS"
-        android:protectionLevel="dangerous"/>
-
-    <uses-permission android:name="android.permission.READ_SMS"
+        android:protectionLevel="dangerous" />
+    <uses-permission
+        android:name="android.permission.READ_SMS"
         android:permissionGroup="android.permission-group.SMS"
-        android:protectionLevel="dangerous"/>
-
-
+        android:protectionLevel="dangerous" />
 
     <application
         android:allowBackup="true"
@@ -34,22 +34,18 @@
         <activity android:name=".EditObjectActivity" />
         <activity android:name=".EditSensorActivity" />
 
-
         <service
             android:name=".services.SmsSenderService"
             android:exported="false" />
 
         <receiver
             android:name=".services.SmsAlarmReceiver"
-            android:process=":remote"/>
-
+            android:process=":remote" />
         <receiver android:name=".services.SmsReceiverService">
             <intent-filter>
                 <action android:name="android.provider.Telephony.SMS_RECEIVED" />
             </intent-filter>
         </receiver>
-
-
 
         <meta-data
             android:name="AA_DB_NAME"
@@ -61,6 +57,7 @@
             android:name="AA_MODELS"
             android:value="com.example.xd720p.sensorcontroller_09082016.models.ElectricCounter,             com.example.xd720p.sensorcontroller_09082016.models.Electricity,             com.example.xd720p.sensorcontroller_09082016.models.ObservationPoints,             com.example.xd720p.sensorcontroller_09082016.models.Sensors,             com.example.xd720p.sensorcontroller_09082016.models.Temperature" />
 
+        <activity android:name=".SaveActivity"></activity>
     </application>
 
 </manifest>

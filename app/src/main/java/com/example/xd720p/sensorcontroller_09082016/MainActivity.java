@@ -192,6 +192,10 @@ public class MainActivity extends AppCompatActivity {
         SharedPreferences refreshSettings = getSharedPreferences("com.example.xd720p.sensorcontroller_09082016",
                 Context.MODE_PRIVATE);
         int spinnerValue = refreshSettings.getInt("spinner", -1);
+        final int lastObs = obsNames.size() - 1;
+        if (spinnerValue > lastObs) {
+            spinnerValue = lastObs;
+        }
         if (spinnerValue != -1) {
             objectSpinner.setSelection(spinnerValue);
         }
@@ -216,17 +220,19 @@ public class MainActivity extends AppCompatActivity {
                 TextView date = (TextView) findViewById(R.id.date_text);
                 TextView time = (TextView) findViewById(R.id.time_text);
 
-                Temperature temp = Temperature.getLastSensorTemp(allSensors.get(0).getId());
+                if (allSensors.size() != 0) {
+                    Temperature temp = Temperature.getLastSensorTemp(allSensors.get(0).getId());
 
-                Calendar cal = Calendar.getInstance();
-                cal.setTimeInMillis(temp.getDATE_TIME());
-                int month = cal.get(Calendar.MONTH)+2;
-                time.setText(cal.get(Calendar.DAY_OF_MONTH) + "." + month + "." + cal.get(Calendar.YEAR));
-                date.setText(cal.get(Calendar.HOUR_OF_DAY) + ":" + cal.get(Calendar.MINUTE));
+                    if (temp != null) {
 
+                        Calendar cal = Calendar.getInstance();
+                        cal.setTimeInMillis(temp.getDATE_TIME());
+                        int month = cal.get(Calendar.MONTH)+2;
+                        time.setText(cal.get(Calendar.DAY_OF_MONTH) + "." + month + "." + cal.get(Calendar.YEAR));
+                        date.setText(cal.get(Calendar.HOUR_OF_DAY) + ":" + cal.get(Calendar.MINUTE));
+                    }
 
-
-
+                }
 
                 for (int i = 0; i < allSensors.size(); i++) {
                     if (Temperature.getLastSensorTemp(allSensors.get(i).getId()) == null) {
@@ -248,9 +254,9 @@ public class MainActivity extends AppCompatActivity {
                 for (int i = 0; i < allSensors.size(); i++) {
 
                     if (allTemps.get(i).equals("-127.0")) {
-                        viewListSms.add(new SmsForView(allSensors.get(i).getSMS_NAME(), "---"));
+                        viewListSms.add(new SmsForView(allSensors.get(i).getSMS_NAME(), "---", allSensors.get(i).getNAME()));
                     } else {
-                        viewListSms.add(new SmsForView(allSensors.get(i).getSMS_NAME(), allTemps.get(i)));
+                        viewListSms.add(new SmsForView(allSensors.get(i).getSMS_NAME(), allTemps.get(i), allSensors.get(i).getNAME()));
                     }
 
                 }
@@ -502,11 +508,13 @@ public class MainActivity extends AppCompatActivity {
                 view.setTag(holder);
                 holder.name = (TextView) view.findViewById(R.id.temperature_sms_list_view);
                 holder.temperature = (TextView) view.findViewById(R.id.temperature_list_view);
+                holder.sensorName = (TextView) view.findViewById(R.id.temperature_sensor_name);
             }
 
             final SmsForView item = getItem(position);
             holder.name.setText(item.getSmsName());
             holder.temperature.setText(item.getTemperature());
+            holder.sensorName.setText(item.getSensorName());
 
             return view;
         }
@@ -515,6 +523,7 @@ public class MainActivity extends AppCompatActivity {
 
             TextView name;
             TextView temperature;
+            TextView sensorName;
 
         }
     }
