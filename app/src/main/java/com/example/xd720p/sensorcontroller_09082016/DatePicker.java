@@ -30,10 +30,24 @@ public class DatePicker extends DialogFragment
         int month = c.get(Calendar.MONTH);
         int day = c.get(Calendar.DAY_OF_MONTH);
 
+        SharedPreferences refreshSettings = getActivity().getSharedPreferences("com.example.xd720p.sensorcontroller_09082016",
+                Context.MODE_PRIVATE);
+        boolean check = refreshSettings.getBoolean("firstButton", false);
+
+        Dialog picker;
+
+        if (check) {
+            picker = new DatePickerDialog(getActivity(), this,
+                    year, month-1, day);
+            picker.setTitle("Выберите дату");
+        } else {
+            picker = new DatePickerDialog(getActivity(), this,
+                    year, month, day);
+            picker.setTitle("Выберите дату");
+        }
+
         // создаем DatePickerDialog и возвращаем его
-        Dialog picker = new DatePickerDialog(getActivity(), this,
-                year, month, day);
-        picker.setTitle("Выберите дату");
+
 
         return picker;
     }

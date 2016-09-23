@@ -86,8 +86,8 @@ public class Temperature extends Model {
     }
 
     public static List<Temperature> getTempsForObjByDate(Long startDate, Long lastDate, Long objId) {
-        return new Select().from(Temperature.class).where("OBSERVATION_POINT = ? AND DATE_TIME > ? AND DATE_TIME < ?"
-        , objId, startDate, lastDate).orderBy("DATE_TIME ASC").execute();
+        return new Select().from(Temperature.class).where("OBSERVATION_POINT = ? AND DATE_TIME >= ? AND DATE_TIME <= ?"
+        , objId, startDate-(24*60*60*1000), lastDate).orderBy("DATE_TIME ASC").execute();
     }
 
     public static void deleteBySensor(Long sensID) {

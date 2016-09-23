@@ -239,8 +239,22 @@ public class MainActivity extends AppCompatActivity {
                         Calendar cal = Calendar.getInstance();
                         cal.setTimeInMillis(temp.getDATE_TIME());
                         int month = cal.get(Calendar.MONTH)+1;
-                        time.setText(cal.get(Calendar.DAY_OF_MONTH) + "." + month + "." + cal.get(Calendar.YEAR));
-                        date.setText(cal.get(Calendar.HOUR_OF_DAY) + ":" + cal.get(Calendar.MINUTE));
+
+                        if (month < 10 && month > 0) {
+                            time.setText(cal.get(Calendar.DAY_OF_MONTH) + "." + 0 + month + "." + cal.get(Calendar.YEAR));
+                        } else {
+                            time.setText(cal.get(Calendar.DAY_OF_MONTH) + "." + month + "." + cal.get(Calendar.YEAR));
+                        }
+
+
+
+                        if (Calendar.MINUTE < 10 && Calendar.MINUTE > 0) {
+                            date.setText(cal.get(Calendar.HOUR_OF_DAY) + ":" + 0 + cal.get(Calendar.MINUTE));
+                        } else {
+                            date.setText(cal.get(Calendar.HOUR_OF_DAY) + ":" + cal.get(Calendar.MINUTE));
+                        }
+
+
                     }
 
                 }

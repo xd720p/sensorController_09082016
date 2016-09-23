@@ -17,6 +17,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.xd720p.sensorcontroller_09082016.models.ObservationPoints;
 import com.example.xd720p.sensorcontroller_09082016.models.Sensors;
@@ -219,7 +220,6 @@ public class SaveActivity extends AppCompatActivity {
             resList.add(values);
 
         }
-        int l =0;
 
 
         String baseDir = path.getText().toString();
@@ -239,7 +239,10 @@ public class SaveActivity extends AppCompatActivity {
 
             writer.close();
 
+            Toast.makeText(getApplicationContext(), "Сохранено", Toast.LENGTH_LONG).show();
+
         } catch (IOException e) {
+            Toast.makeText(getApplicationContext(), "Не сохранено", Toast.LENGTH_LONG).show();
             e.printStackTrace();
         }
     }

@@ -92,7 +92,7 @@
             android:layout_height="wrap_content"
             android:background="@drawable/button_press"
             android:textColor="#FFFFFF"
-            android:text="Отмена"
+            android:text="Назад"
             android:layout_marginLeft="5dp"
             android:padding="10dp"/>
 
