@@ -211,7 +211,11 @@ public class SaveActivity extends AppCompatActivity {
             tempStrings.add(date);
 
             for (int i = 0; i < allSens.size(); i++) {
-                tempStrings.add(allTemps.get(p).getVALUE().toString());
+
+                String temp = allTemps.get(p).getVALUE().toString();
+                temp = temp.replace(".", ",");
+
+                tempStrings.add(temp);
                 ++p;
             }
 

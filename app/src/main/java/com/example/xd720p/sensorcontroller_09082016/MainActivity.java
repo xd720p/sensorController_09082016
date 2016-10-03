@@ -3,6 +3,7 @@ package com.example.xd720p.sensorcontroller_09082016;
 import android.Manifest;
 import android.app.Activity;
 import android.app.AlarmManager;
+import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -15,6 +16,7 @@ import android.os.Build;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.NotificationCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -39,6 +41,7 @@ import com.example.xd720p.sensorcontroller_09082016.models.ObservationPoints;
 import com.example.xd720p.sensorcontroller_09082016.models.Sensors;
 import com.example.xd720p.sensorcontroller_09082016.models.SmsForView;
 import com.example.xd720p.sensorcontroller_09082016.models.Temperature;
+
 import com.example.xd720p.sensorcontroller_09082016.services.SmsAlarmReceiver;
 
 import java.util.ArrayList;
@@ -59,6 +62,20 @@ public class MainActivity extends AppCompatActivity {
 
          makeAlarm();
 
+
+         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(getApplicationContext());
+         mBuilder.setSmallIcon(R.drawable.icon36);
+         mBuilder.setContentTitle("Термометр");
+         mBuilder.setContentText("Приложение работает в фоновом режиме");
+         Intent myIntent = new Intent(getApplicationContext(), MainActivity.class);
+         PendingIntent intent2 = PendingIntent.getBroadcast(getApplicationContext(), 1,
+                 myIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+         mBuilder.setContentIntent(intent2);
+         NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+         mNotificationManager.notify(1, mBuilder.build());
+
+        // startService(new Intent(this, NotService.class));
+
         ImageButton settingsButton = (ImageButton) findViewById(R.id.settings_button);
          ImageButton saveButton = (ImageButton) findViewById(R.id.save_button);
         ImageButton addObjectButton = (ImageButton) findViewById(R.id.add_button);
@@ -77,7 +94,8 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-    // Ищем нужные вьюхи и запрашиваем необходимые разрешения
+
+         // Ищем нужные вьюхи и запрашиваем необходимые разрешения
 
 
         //Прописываем слушателей для кнопок
@@ -197,7 +215,7 @@ public class MainActivity extends AppCompatActivity {
 
 
         ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, obsNames);
-        spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinnerAdapter.setDropDownViewResource(android.R.layout.simple_list_item_activated_1);
         objectSpinner.setAdapter(spinnerAdapter);
 
         SharedPreferences refreshSettings = getSharedPreferences("com.example.xd720p.sensorcontroller_09082016",
@@ -248,7 +266,7 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-                        if (Calendar.MINUTE < 10 && Calendar.MINUTE > 0) {
+                        if (cal.get(Calendar.MINUTE) < 10 && cal.get(Calendar.MINUTE) > 0) {
                             date.setText(cal.get(Calendar.HOUR_OF_DAY) + ":" + 0 + cal.get(Calendar.MINUTE));
                         } else {
                             date.setText(cal.get(Calendar.HOUR_OF_DAY) + ":" + cal.get(Calendar.MINUTE));
@@ -276,7 +294,11 @@ public class MainActivity extends AppCompatActivity {
 
                 List<SmsForView> viewListSms = new ArrayList<SmsForView>();
 
+
+
                 for (int i = 0; i < allSensors.size(); i++) {
+
+                    allSensors.get(i).getMODIFIED_AT();
 
                     if (allTemps.get(i).equals("-127.0" + " \u00b0" + "C")) {
                         viewListSms.add(new SmsForView(allSensors.get(i).getSMS_NAME(), "---", allSensors.get(i).getNAME()));
@@ -317,6 +339,17 @@ public class MainActivity extends AppCompatActivity {
             mReceiver = null;
             mIsReceiverRegistered = false;
         }
+
+        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(getApplicationContext());
+        mBuilder.setSmallIcon(R.drawable.icon36);
+        mBuilder.setContentTitle("Термометр");
+        mBuilder.setContentText("Приложение работает в фоновом режиме");
+        Intent myIntent = new Intent(getApplicationContext(), MainActivity.class);
+        PendingIntent intent2 = PendingIntent.getBroadcast(getApplicationContext(), 1,
+                myIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        mBuilder.setContentIntent(intent2);
+        NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        mNotificationManager.notify(1, mBuilder.build());
 
         super.onPause();
     }

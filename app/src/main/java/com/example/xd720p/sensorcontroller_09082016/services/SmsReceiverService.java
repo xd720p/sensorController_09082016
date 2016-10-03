@@ -99,17 +99,24 @@ public class SmsReceiverService extends BroadcastReceiver {
         SimpleDateFormat df = new SimpleDateFormat("dd-MMM-yyyy-HH-mm-ss");
         String currentDate = df.format(c.getTime());
 
-        long time = System.currentTimeMillis();
+        Long time = System.currentTimeMillis();
+
+        List<Sensors> sensorsList = new ArrayList<>();
 
         for (Map.Entry<String, Double> entry : input.entrySet()) {
             existingSensor = Sensors.findBySmsNameAndPoint(entry.getKey(), op.getId());
 
             if (existingSensor != null) {
+
+                existingSensor.setMODIFIED_AT(time.toString());
+
+                Sensors.updateObject(existingSensor,entry.getKey() , op.getId());
+
                 temp = new Temperature(op.getId(), existingSensor.getId(), entry.getValue(), time);
                 temp.save();
                 existingSensor = null;
             } else {
-                sensors = new Sensors(op.getId(), 0, 1, "", "", entry.getKey(), currentDate, currentDate);
+                sensors = new Sensors(op.getId(), 0, 1, "", "", entry.getKey(), time.toString(), time.toString());
                 sensors.save();
                 temp = new Temperature(op.getId(), sensors.getId(), entry.getValue(), time);
                 temp.save();

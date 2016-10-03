@@ -1,5 +1,6 @@
 package com.example.xd720p.sensorcontroller_09082016;
 
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -68,8 +69,27 @@ public class AddObjectActivity extends AppCompatActivity {
                         parseString(elecPasswordEdit.getText().toString()),
                         elec,
                         "",currentDate, currentDate);
-                observationPoints.save();
-                finish();
+
+                if (checkObject(observationPoints)) {
+                    android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(AddObjectActivity.this);
+
+                    builder.setTitle("Ошибка")
+                            .setMessage("Объект с таким именем уже существует")
+                            .setCancelable(false)
+                            .setNegativeButton("Ок",
+                                    new DialogInterface.OnClickListener() {
+                                        public void onClick(DialogInterface dialog, int id) {
+                                            dialog.cancel();
+                                        }
+                                    });
+                    android.app.AlertDialog alert = builder.create();
+                    alert.show();
+
+                } else {
+                    observationPoints.save();
+                    finish();
+                }
+
             }
         });
 
@@ -79,5 +99,10 @@ public class AddObjectActivity extends AppCompatActivity {
         return input.length() != 0 ? Integer.parseInt(input) : 0;
     }
 
+    private boolean checkObject(ObservationPoints input) {
+        ObservationPoints temp = ObservationPoints.findByName(input.getNAME());
+
+        return temp!=null;
+    }
 
 }
