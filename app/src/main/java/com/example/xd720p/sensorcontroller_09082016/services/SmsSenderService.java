@@ -15,6 +15,11 @@ import com.example.xd720p.sensorcontroller_09082016.models.ObservationPoints;
 import com.example.xd720p.sensorcontroller_09082016.models.Sensors;
 import com.example.xd720p.sensorcontroller_09082016.models.Temperature;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.Calendar;
 import java.util.List;
 
 
@@ -67,9 +72,45 @@ public class SmsSenderService extends IntentService {
         String SMS_SENT = "SMS_SENT";
         String SMS_DELIVERED = "SMS_DELIVERED";
 
+        Calendar cal = Calendar.getInstance();
+
+        String text = cal.get(Calendar.HOUR_OF_DAY) + ":" + cal.get(Calendar.MINUTE);
+
+        appendLog(text);
+
         SmsManager smsManager = android.telephony.SmsManager.getDefault();
         smsManager.sendTextMessage(phoneNumber, null, smsBody, null, null);
 
+    }
+
+    public void appendLog(String text)
+    {
+        File logFile = new File("sdcard/Download/log.file");
+        if (!logFile.exists())
+        {
+            try
+            {
+                logFile.createNewFile();
+            }
+            catch (IOException e)
+            {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+        }
+        try
+        {
+            //BufferedWriter for performance, true to set append to file flag
+            BufferedWriter buf = new BufferedWriter(new FileWriter(logFile, true));
+            buf.append(text);
+            buf.newLine();
+            buf.close();
+        }
+        catch (IOException e)
+        {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
     }
 
 }

@@ -21,6 +21,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.telephony.SmsManager;
+import android.text.method.ScrollingMovementMethod;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
@@ -569,6 +570,7 @@ public class MainActivity extends AppCompatActivity {
                 holder.name = (TextView) view.findViewById(R.id.temperature_sms_list_view);
                 holder.temperature = (TextView) view.findViewById(R.id.temperature_list_view);
                 holder.sensorName = (TextView) view.findViewById(R.id.temperature_sensor_name);
+
             }
 
             final SmsForView item = getItem(position);
